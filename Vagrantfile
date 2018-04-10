@@ -12,7 +12,7 @@ Vagrant.configure(2) do |config|
 
   # Every Vagrant development environment requires a box. You can search for
   # boxes at https://atlas.hashicorp.com/search.
-  config.vm.box = "ubuntu/trusty64"
+  config.vm.box = "ubuntu/xenial64"
 
   # Disable automatic box update checking. If you disable this, then
   # boxes will only be checked for updates when the user runs
@@ -26,7 +26,7 @@ Vagrant.configure(2) do |config|
 
   # Create a private network, which allows host-only access to the machine
   # using a specific IP.
-  # config.vm.network "private_network", ip: "192.168.33.10"
+  config.vm.network "private_network", ip: "192.168.44.10"
 
   # Create a public network, which generally matched to bridged network.
   # Bridged networks make the machine appear as another physical device on
@@ -37,7 +37,7 @@ Vagrant.configure(2) do |config|
   # the path on the host to the actual folder. The second argument is
   # the path on the guest to mount the folder. And the optional third
   # argument is a set of non-required options.
-  # config.vm.synced_folder "../data", "/vagrant_data"
+  # config.vm.synced_folder "../shared", "/home/vagrant/shared"
 
   # Provider-specific configuration so you can fine-tune various
   # backing providers for Vagrant. These expose provider-specific options.
@@ -79,6 +79,25 @@ Vagrant.configure(2) do |config|
     source ~/.nvm/nvm.sh
     nvm install node
     nvm alias default node
+
+    echo "Installing Oh My Zsh..."
+    sudo apt-get install -y zsh
+    wget --no-check-certificate https://github.com/robbyrussell/oh-my-zsh/raw/master/tools/install.sh -O - | sh 
+    sudo chsh -s /bin/zsh vagrant
+    zsh
+
+    echo "Changing default Oh My Zsh theme to new theme..."
+    sed -i 's/ZSH_THEME="robbyrussell"/ZSH_THEME="flazz"/g' ~/.zshrc
+
+    echo "Adding locales used on host to avoid Perl errors..."
+    sudo locale-gen en_US.UTF-8
+    sudo locale-gen en_CA.UTF-8
+
+    echo "Add plugins to zsh..."
+    source ~/.zshrc
+    git clone https://github.com/zsh-users/zsh-autosuggestions $ZSH_CUSTOM/plugins/zsh-autosuggestions
+    git clone https://github.com/zsh-users/zsh-syntax-highlighting.git $ZSH_CUSTOM/plugins/zsh-syntax-highlighting
+
 
     cd /vagrant
 
